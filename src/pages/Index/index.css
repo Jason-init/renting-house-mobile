@@ -1,0 +1,12 @@
+.index .am-flexbox {
+  text-align: center;
+  padding: 10px 0;
+}
+.index .am-flexbox img {
+  width: 48px;
+  height: 48px;
+}
+.index .am-flexbox h2 {
+  font-size: 13px;
+  font-weight: normal;
+}
