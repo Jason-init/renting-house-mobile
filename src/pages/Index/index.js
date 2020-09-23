@@ -2,9 +2,9 @@ import React from 'react'
 
 import axios from 'axios'
 
-import './index.css'
+import './index.scss'
 
-import { Carousel, Flex } from 'antd-mobile'
+import { Carousel, Flex, Grid } from 'antd-mobile'
 
 import NavImg1 from '../../assets/images/nav-1.png'
 import NavImg2 from '../../assets/images/nav-2.png'
@@ -37,16 +37,28 @@ const navData = [
     navPath: '/rent',
   },
 ]
+
 export default class Index extends React.Component {
   state = {
     swiperData: [],
     isSwiperLoaded: false,
+    groupData: [],
   }
   async getSwiperData() {
     const { data } = await axios.get('http://localhost:8080/home/swiper')
     this.setState({
       swiperData: data.body,
       isSwiperLoaded: true,
+    })
+  }
+  async getGroupData() {
+    const { data } = await axios.get('http://localhost:8080/home/groups', {
+      params: {
+        area: 'AREA|88cff55c-aaa4-e2e0',
+      },
+    })
+    this.setState({
+      groupData: data.body,
     })
   }
   renderSwiper() {
@@ -79,8 +91,20 @@ export default class Index extends React.Component {
       </Flex.Item>
     ))
   }
+  renderGridItem(el) {
+    return (
+      <Flex>
+        <div className="title">
+          <h3>{el.title}</h3>
+          <p>{el.desc}</p>
+        </div>
+        <img src={`http://localhost:8080${el.imgSrc}`} alt="" />
+      </Flex>
+    )
+  }
   componentDidMount() {
     this.getSwiperData()
+    this.getGroupData()
   }
   render() {
     return (
@@ -93,6 +117,20 @@ export default class Index extends React.Component {
           ) : null}
         </div>
         <Flex>{this.renderFlexItem()}</Flex>
+        <div className="group-container">
+          <Flex justify="between">
+            <h3>租房小组</h3>
+            <span>更多</span>
+          </Flex>
+          <Grid
+            data={this.state.groupData}
+            activeStyle={true}
+            renderItem={this.renderGridItem}
+            columnNum={2}
+            square={false}
+            hasLine={false}
+          />
+        </div>
       </div>
     )
   }
